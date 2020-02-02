@@ -11,8 +11,6 @@ router.get("/", async (req, res) => {
     Promise.all(
       items.map(async item => {
         const categories = await Items.getItemsCategories(item.id);
-        const favorited = await Favorites.getFavoritesCount(item.id);
-        item.favorited = favorited.count;
         item.categories = categories;
         return item;
       })
@@ -28,8 +26,7 @@ router.get("/:id", verifyItemExists, async (req, res) => {
   try {
     const id = req.params.id;
     const item = await Items.getItemById(id);
-    const favorited = await Favorites.getFavoritesCount(id);
-    item.favorited = favorited.count;
+
     item.categories = await Items.getItemsCategories(id);
     res.status(200).json({ item });
   } catch (error) {
